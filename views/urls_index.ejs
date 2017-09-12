@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>TinyApp</title>
-</head>
-  <% include ../views/partials/_header.ejs%>
-<body>
-  <ul><!-- url in the loop is a generic name -->
-  <% for(var url in urls ) { %>
-    <li><%= `${url}: ${urls[url]}` %></li>
-  <% } %>
-  </ul>
-</body>
+  <head>
+    <title>TinyApp</title>
+  </head>
+    <% include ../views/partials/_header.ejs%>
+    <body>
+      <ul><!-- url in the loop is a generic name -->
+          <!-- it should however help us understand -->
+          <!-- what we are looping over -->
+      <% for(var url in urls ) { %>
+        <li><%= `${url}: ${urls[url]}` %></li>
+      <% } %>
+      </ul>
+    </body>
 </html>
