@@ -16,8 +16,8 @@ app.get("/urls/new", (request, response) => {
 });
 
 app.post("/urls", (request, response) => {
-  console.log(request.body);  // debug statement to see POST parameters
-  response.send("Ok");         // Respond with 'Ok' (we will replace this)
+  console.log(request.body);
+  response.send(`This is your random ShortURL: ${generateRandomString()}`);
 });
 
 app.get("/urls", (request, response) => {
@@ -43,8 +43,16 @@ app.get("/hello", (request, response) => {
   response.end("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-
-
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+function generateRandomString() {
+  let text = "";
+  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 6; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
