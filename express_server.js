@@ -85,8 +85,8 @@ app.post("/login", (request, response)  => {
   response.redirect('/urls');
 });
 
-app.post("/logout". (request, response) => {
-
+app.post("/logout", (request, response) => {
+  response.clearCookie('username');
   response.redirect('/urls');
 });
 

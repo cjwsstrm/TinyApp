@@ -3,15 +3,22 @@
 This is TinyApp
 <br>
 <br>
+<% if(username !== undefined) { %>
+  <form method="POST" action="/logout"
+  <p>Logged in as: <%= username %><br>
+    <button type="submit">Logout</button>
+  </p>
+  </form>
+<% } else{ %>
 <table>
   <tr>
-    <td><form method="POST" action="/login/"
-    <label for="login">Choose a username:</label></td>
-    <td><input type="text" name="username" placeholder="thebestname" style="width: 300px">
-    <td><button type="submit">Login</button></td>
-    <td> Logged in as: <%= username %></td>
+    <form method="POST" action="/login/"
+      <td><label for="login">Choose a username</label></td>
+      <td><input type="text" name="username" placeholder="thebestname" style="width: 300px">
+      <td><button type="submit">Login</button></td>
     </form>
   </tr>
 </table>
+<% } %>
 <br>
 <br>
