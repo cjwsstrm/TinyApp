@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
-const urlDatabase = {
+let urlDatabase = {
   "b2xVn2": "http://lighthouselabs.ca",
   "95m5xK": "http://google.com"
 };
@@ -17,7 +17,13 @@ app.get("/urls/new", (request, response) => {
 
 app.post("/urls", (request, response) => {
   console.log(request.body);
-  response.send(`This is your random ShortURL: ${generateRandomString()}`);
+  let randomKey = generateRandomString();
+  let new_url = request.body['longURL'];
+  urlDatabase[randomKey] = new_url;
+  console.log(urlDatabase);
+  let redirectUrl = 'http://localhost:8080/urls/' + new_url
+  // response.send(`This is your random ShortURL: ${randomKey}`);
+  response.redirect(redirectUrl);
 });
 
 app.get("/urls", (request, response) => {
