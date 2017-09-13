@@ -21,9 +21,15 @@ app.post("/urls", (request, response) => {
   let new_url = request.body['longURL'];
   urlDatabase[randomKey] = new_url;
   console.log(urlDatabase);
-  let redirectUrl = 'http://localhost:8080/urls/' + new_url
+  let redirectUrl = 'http://localhost:8080/urls/' + randomKey
   // response.send(`This is your random ShortURL: ${randomKey}`);
   response.redirect(redirectUrl);
+});
+
+app.get("/u/:shortURL", (request, response) => {
+  let longURL = urlDatabase[request.params.shortURL];
+  console.log(longURL);
+  response.redirect(longURL);
 });
 
 app.get("/urls", (request, response) => {
