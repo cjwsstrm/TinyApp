@@ -74,8 +74,9 @@ app.post("/urls/:id", (request, response) => {
 });
 
 app.post("/login", (request, response)  => {
-
-  response.redirect(`/login/${request.body.username}`)
+  console.log(request.body.username);
+  response.cookie('username', `${request.body.username}`)
+  response.redirect('/urls')
 })
 
 app.listen(PORT, () => {
