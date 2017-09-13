@@ -62,9 +62,11 @@ app.get("/urls/:id", (request, response) => {
 app.post("/urls/:id/delete", (request, response) => {
   delete urlDatabase[request.params.id];
   response.redirect("/urls");
-})
+});
 
-
+app.post("urls/:id", (request, response) => {
+  
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
