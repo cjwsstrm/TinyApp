@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
+
 let urlDatabase = {
   "b2xVn2": "http://lighthouselabs.ca",
   "95m5xK": "http://google.com"
