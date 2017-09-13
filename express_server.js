@@ -22,7 +22,6 @@ app.post("/urls", (request, response) => {
   urlDatabase[randomKey] = new_url;
   console.log(urlDatabase);
   let redirectUrl = 'http://localhost:8080/urls/' + randomKey
-  // response.send(`This is your random ShortURL: ${randomKey}`);
   response.redirect(redirectUrl);
 });
 
