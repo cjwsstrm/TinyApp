@@ -4,13 +4,20 @@
     <title>TinyApp</title>
   </head>
     <body>
-        <% include ../views/partials/_header.ejs%>
-      <ul><!-- url in the loop is a generic name -->
-          <!-- it should however help us understand -->
-          <!-- what we are looping over -->
+      <% include ../views/partials/_header.ejs%>
+      <table>
+        <tr>
       <% for(var url in urls ) { %>
-        <li><%= `${url}: ${urls[url]}` %></li>
+          <td><%= `${url}:` %></td>
+          <td><%= `${urls[url]}`%></td>
+          <td><form method="POST" action="/urls/<%= shortURL %>/delete">
+            <button name="Delete url">Delete the URL</button>
+          </form></td>
+          </tr>
       <% } %>
-      </ul>
+    </table>
+      <p>
+
+      </p>
     </body>
 </html>

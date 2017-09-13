@@ -11,6 +11,7 @@ app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({extended: true}));
 
+//app.get accepts a get request from the browser
 app.get("/urls/new", (request, response) => {
   response.render("urls_new");
 });
@@ -32,15 +33,26 @@ app.get("/u/:shortURL", (request, response) => {
 });
 
 app.get("/urls", (request, response) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = { urls: urlDatabase,
+                       keyURL: urlDatabase[request.params.id],
+                       shortURL: request.params.id
+                     };
   response.render("urls_index", templateVars);
 });
 
 app.get("/urls/:id", (request, response) => {
   let templateVars = { shortURL: request.params.id,
-                       keyURL: urlDatabase[request.params.id]};
+                       keyURL: urlDatabase[request.params.id
+                       ]};
   response.render("urls_show", templateVars);
 });
+
+app.post("/urls/:id/delete", (request, response) => {
+  let templateVars = { shortURL: request.params.id};
+  delete urlDatabase.shortURL;
+
+  response.redirect("/urls");
+})
 
 app.get("/", (request, response) => {
   response.end("Hello!");
