@@ -28,7 +28,11 @@ app.get("/hello", (request, response) => {
 
 //app.get accepts a get request from the browser
 app.get("/urls/new", (request, response) => {
-  response.render("urls_new");
+  let templateVars = { shortURL: request.params.id,
+                       keyURL: urlDatabase[request.params.id],
+                      username: request.cookies['username']
+                     };
+  response.render("urls_new", templateVars);
 });
 
 app.post("/urls", (request, response) => {
@@ -50,15 +54,17 @@ app.get("/u/:shortURL", (request, response) => {
 app.get("/urls", (request, response) => {
   let templateVars = { urls: urlDatabase,
                        keyURL: urlDatabase[request.params.id],
-                       shortURL: request.params.id
+                       shortURL: request.params.id,
+                       username: request.cookies['username']
                      };
   response.render("urls_index", templateVars);
 });
 
 app.get("/urls/:id", (request, response) => {
   let templateVars = { shortURL: request.params.id,
-                       keyURL: urlDatabase[request.params.id
-                       ]};
+                       keyURL: urlDatabase[request.params.id],
+                       username: request.cookies['username']
+                      };
   response.render("urls_show", templateVars);
 });
 

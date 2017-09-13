@@ -3,10 +3,15 @@
 This is TinyApp
 <br>
 <br>
-<form method="POST" action="/login/"
-<label for="login">Choose a username:</label>
-<input type="text" name="username" placeholder="thebestname" style="width: 300px">
-<button type="submit">Login</button>
-</form>
+<table>
+  <tr>
+    <td><form method="POST" action="/login/"
+    <label for="login">Choose a username:</label></td>
+    <td><input type="text" name="username" placeholder="thebestname" style="width: 300px">
+    <td><button type="submit">Login</button></td>
+    <td> Logged in as: <%= username %></td>
+    </form>
+  </tr>
+</table>
 <br>
 <br>
