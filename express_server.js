@@ -11,6 +11,18 @@ app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.get("/", (request, response) => {
+  response.end("Hello!");
+});
+
+app.get("/urls/json", (request, response) => {
+  response.json(urlDatabase);
+});
+
+app.get("/hello", (request, response) => {
+  response.end("<html><body>Hello <b>World</b></body></html>\n");
+});
+
 //app.get accepts a get request from the browser
 app.get("/urls/new", (request, response) => {
   response.render("urls_new");
@@ -48,23 +60,11 @@ app.get("/urls/:id", (request, response) => {
 });
 
 app.post("/urls/:id/delete", (request, response) => {
-  let templateVars = { shortURL: request.params.id};
-  delete urlDatabase.shortURL;
-
+  delete urlDatabase[request.params.id];
   response.redirect("/urls");
 })
 
-app.get("/", (request, response) => {
-  response.end("Hello!");
-});
 
-app.get("/urls/json", (request, response) => {
-  response.json(urlDatabase);
-});
-
-app.get("/hello", (request, response) => {
-  response.end("<html><body>Hello <b>World</b></body></html>\n");
-});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

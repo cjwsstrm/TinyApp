@@ -10,7 +10,7 @@
       <% for(var url in urls ) { %>
           <td><%= `${url}:` %></td>
           <td><%= `${urls[url]}`%></td>
-          <td><form method="POST" action="/urls/<%= shortURL %>/delete">
+          <td><form method="POST" action="/urls/<%= url %>/delete">
             <button name="Delete url">Delete the URL</button>
           </form></td>
           </tr>
