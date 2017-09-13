@@ -6,15 +6,14 @@
     <body>
       <% include ../views/partials/_header.ejs%>
       <ul>
-        <li><%= `ShortURL: localhost:8080/${shortURL}`%></li>
+        <li><%= `ShortURL: ${shortURL}`%></li>
       </ul>
-
-      <form method="POST" action="/urls/:id>
-
-        <p>
+      <p>
+      <form method="POST" action="/urls/<%= shortURL %>">
           <label for="URL">Update URL</label>
           <input type="text" name="URL" value="<%= keyURL %>">
-          <button type="submit">Update the URL</button>
+          <button type="submit">Update</button>
+      </form>
         </p>
     </body>
 </html>

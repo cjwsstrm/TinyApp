@@ -64,8 +64,10 @@ app.post("/urls/:id/delete", (request, response) => {
   response.redirect("/urls");
 });
 
-app.post("urls/:id", (request, response) => {
-  
+app.post("/urls/:id", (request, response) => {
+  let id = request.params.id;
+   urlDatabase[id] = request.body.URL;
+  response.redirect('/urls');
 });
 
 app.listen(PORT, () => {
