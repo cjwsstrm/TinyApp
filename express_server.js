@@ -12,6 +12,7 @@ let urlDatabase = {
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 app.get("/", (request, response) => {
   response.end("Hello!");
@@ -71,6 +72,11 @@ app.post("/urls/:id", (request, response) => {
    urlDatabase[id] = request.body.URL;
   response.redirect('/urls');
 });
+
+app.post("/login", (request, response)  => {
+
+  response.redirect(`/login/${request.body.username}`)
+})
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
