@@ -81,9 +81,14 @@ app.post("/urls/:id", (request, response) => {
 
 app.post("/login", (request, response)  => {
   console.log(request.body.username);
-  response.cookie('username', `${request.body.username}`)
-  response.redirect('/urls')
-})
+  response.cookie('username', `${request.body.username}`);
+  response.redirect('/urls');
+});
+
+app.post("/logout". (request, response) => {
+
+  response.redirect('/urls');
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -93,8 +98,8 @@ function generateRandomString() {
   let text = "";
   const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (var i = 0; i < 6; i++)
+  for (var i = 0; i < 6; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
-
+  }
   return text;
 }
