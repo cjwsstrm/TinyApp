@@ -32,12 +32,18 @@ const urlDatabase = {
   "95m5xK": "http://google.com"
 };
 
+app.locals.urlDatabase = urlDatabase;
+app.locals.users = users;
+
 
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
-
+app.use( function (request, response, next) {
+  response.locals.user = request.cookies.user;
+  next();
+});
 
 app.get("/", (request, response) => {
   response.end("Hello!");
@@ -53,11 +59,11 @@ app.get("/hello", (request, response) => {
 
 //app.get accepts a get request from the browser
 app.get("/urls/new", (request, response) => {
-  let templateVars = { shortURL: request.params.id,
-                       keyURL: urlDatabase[request.params.id],
-                      user: users[request.cookies['user_id']]
-                     };
-  response.render("urls_new", templateVars);
+  if (response.locals.user) {
+      response.render("urls_new");
+  } else {
+    response.render('login');
+  }
 });
 
 app.post("/urls", (request, response) => {
@@ -77,20 +83,11 @@ app.get("/u/:shortURL", (request, response) => {
 });
 
 app.get("/urls", (request, response) => {
-  let templateVars = { urls: urlDatabase,
-                       keyURL: urlDatabase[request.params.id],
-                       shortURL: request.params.id,
-                       user: users[request.cookies['user_id']]
-                     };
-  response.render("urls_index", templateVars);
+  response.render("urls_index");
 });
 
 app.get("/urls/:id", (request, response) => {
-  let templateVars = { shortURL: request.params.id,
-                       keyURL: urlDatabase[request.params.id],
-                       user: users[request.cookies['user_id']]
-                      };
-  response.render("urls_show", templateVars);
+  response.render("urls_show");
 });
 
 app.post("/urls/:id/delete", (request, response) => {
@@ -105,17 +102,13 @@ app.post("/urls/:id", (request, response) => {
 });
 
 app.get("/login", (request, response) => {
-  let templateVars = { shortURL: request.params.id,
-                       keyURL: urlDatabase[request.params.id],
-                      user: users[request.cookies['user_id']]
-                     };
-  response.render('login', templateVars);
+  response.render('login');
 });
 
 app.post("/login", (request, response)  => {
-  const user = userExists(request.body.email);
+  const user = userEmailExists(request.body.email);
   if (user && user.password === request.body.password) {
-    response.cookie('user_id', user.id)
+    response.cookie('user', user)
     response.redirect('/');
   } else {
     response.statusCode = 403;
@@ -124,16 +117,12 @@ app.post("/login", (request, response)  => {
 });
 
 app.post("/logout", (request, response) => {
-  response.clearCookie('user_id');
+  response.clearCookie('user');
   response.redirect('/urls');
 });
 
 app.get("/register", (request, response) => {
-  let templateVars = { shortURL: request.params.id,
-                       keyURL: urlDatabase[request.params.id],
-                      user: users[request.cookies['user_id']]
-                     };
-  response.render('register', templateVars);
+  response.render('register');
 });
 
 
@@ -142,7 +131,7 @@ app.post("/register", (request, response) => {
     response.statusCode = 400;
     response.end(`${response.statusCode}`);
   }
-  if (userExists(request.body.email)) {
+  if (userEmailExists(request.body.email)) {
     response.statusCode = 400;
     response.end(`${response.statusCode}`);
   }
@@ -154,7 +143,7 @@ app.post("/register", (request, response) => {
       password: request.body.password
     };
     console.log(users);
-    response.cookie('user_id', randomKey);
+    response.cookie('user', users[randomKey]);
     response.redirect('/urls');
   }
 });
@@ -164,14 +153,13 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-const userExists = function (email) {
+const userEmailExists = function (email) {
   for (user_id in users) {
     if (users[user_id].email === email) {
       return users[user_id];
     }
   }
 }
-
 
 function generateRandomString() {
   let text = "";

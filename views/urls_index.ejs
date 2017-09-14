@@ -7,9 +7,9 @@
       <% include ../views/partials/_header.ejs%>
       <table>
         <tr>
-      <% for(var url in urls ) { %>
+      <% for(var url in locals.urlDatabase) { %>
           <td><%= `${url}:` %></td>
-          <td><%= `${urls[url]}`%></td>
+          <td><%= `${locals.urlDatabase[url]}`%></td>
           <td> <a href="/urls/<%= url %>">Edit</</a>
           <form method="POST" action="/urls/<%= url %>/delete">
           <td><button name="Delete url">Delete the URL</button></tabled>
