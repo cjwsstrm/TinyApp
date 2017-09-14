@@ -4,14 +4,6 @@ const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 
-
-
-let urlDatabase = {
-  "b2xVn2": "http://lighthouselabs.ca",
-  "95m5xK": "http://google.com"
-};
-
-
 const users = {
   "userRandomID": {
     id: "userRandomID",
@@ -34,6 +26,12 @@ const users = {
    password: "areallybadone"
  }
 };
+
+const urlDatabase = {
+  "b2xVn2": "http://lighthouselabs.ca",
+  "95m5xK": "http://google.com"
+};
+
 
 app.set("view engine", "ejs");
 
@@ -115,9 +113,14 @@ app.get("/login", (request, response) => {
 });
 
 app.post("/login", (request, response)  => {
-  console.log(request.body.username);
-  response.cookie('username', `${request.body.username}`);
-  response.redirect('/urls');
+  const user = userExists(request.body.email);
+  if (user && user.password === request.body.password) {
+    response.cookie('user_id', user.id)
+    response.redirect('/');
+  } else {
+    response.statusCode = 403;
+    response.end(`${response.statusCode}`);
+  }
 });
 
 app.post("/logout", (request, response) => {
@@ -139,7 +142,7 @@ app.post("/register", (request, response) => {
     response.statusCode = 400;
     response.end(`${response.statusCode}`);
   }
-  if (users.hasOwnProperty(`${request.body.email}`)) {
+  if (userExists(request.body.email)) {
     response.statusCode = 400;
     response.end(`${response.statusCode}`);
   }
@@ -150,8 +153,8 @@ app.post("/register", (request, response) => {
       email: request.body.email,
       password: request.body.password
     };
-    response.cookie('user_id', randomKey);
     console.log(users);
+    response.cookie('user_id', randomKey);
     response.redirect('/urls');
   }
 });
@@ -160,6 +163,14 @@ app.post("/register", (request, response) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+const userExists = function (email) {
+  for (user_id in users) {
+    if (users[user_id].email === email) {
+      return users[user_id];
+    }
+  }
+}
 
 
 function generateRandomString() {
