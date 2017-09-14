@@ -129,12 +129,6 @@ app.post("/logout", (request, response) => {
 });
 
 app.get("/register", (request, response) => {
-<<<<<<< HEAD
-
-  response.render('/register');
-});
-
-=======
   let templateVars = { shortURL: request.params.id,
                        keyURL: urlDatabase[request.params.id],
                       user: users[request.cookies['user_id']]
@@ -166,7 +160,6 @@ app.post("/register", (request, response) => {
 });
 
 
->>>>>>> feature/user-registration
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
