@@ -4,6 +4,8 @@ const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 
+
+
 let urlDatabase = {
   "b2xVn2": "http://lighthouselabs.ca",
   "95m5xK": "http://google.com"
@@ -102,6 +104,10 @@ app.post("/urls/:id", (request, response) => {
   let id = request.params.id;
    urlDatabase[id] = request.body.URL;
   response.redirect('/urls');
+});
+
+app.get("/login", (request, response) => {
+  response.render('login');
 });
 
 app.post("/login", (request, response)  => {
