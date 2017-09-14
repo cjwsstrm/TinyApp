@@ -1,24 +1,27 @@
 <!-- views/partials/header.ejs -->
-
 This is TinyApp
 <br>
 <br>
-<% if(username !== undefined) { %>
+
+<% if(user) { %>
   <form method="POST" action="/logout"
-  <p>Logged in as: <%= username %><br>
+  <p>Logged in as: <%= user.email %><br>
     <button type="submit">Logout</button>
   </p>
   </form>
 <% } else{ %>
-<table>
-  <tr>
-    <form method="POST" action="/login/"
-      <td><label for="login">Choose a username</label></td>
-      <td><input type="text" name="username" placeholder="thebestname" style="width: 300px">
-      <td><button type="submit">Login</button></td>
+<p>
+    <form method="GET" action="/register"
+    <label for="login">Register with us</label>
+    <button type="submit">Register</button>
     </form>
-  </tr>
-</table>
+<p>
+<p>
+    <form method="GET" action="/login/"
+    <label for="login">Here to log in</label>
+    <button type="submit">Login</button>
+    </form>
 <% } %>
+</p>
 <br>
 <br>
