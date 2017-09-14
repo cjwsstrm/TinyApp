@@ -1,36 +1,22 @@
-<!-- views/partials/header.ejs -->
-This is TinyApp
-<br>
-<br>
-
-<% if(user) { %>
-  <form method="POST" action="/logout"
-  <p>Logged in as: <%= user.email %><br>
-    <button type="submit">Logout</button>
-  </p>
-  </form>
-<% } else{ %>
-<p>
-  <table>
-  <tr>
-    <form method="GET" action="/register"
-      <label for="login">Register with us</label>
-      <td><button type="submit">Register</button></td>
-  </tr>
-  </form>
-  </table>
-<p>
-<p>
-  <table>
-  <tr>
-    <form method="POST" action="/login/"
-      <td><label for="login">Choose a username</label></td>
-      <td><input type="text" name="username" placeholder="thebestname" style="width: 300px">
-      <td><button type="submit">Login</button></td>
-    </form>
-  </tr>
-</table>
-<% } %>
-</p>
-<br>
-<br>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TinyApp</title>
+  </head>
+    <body style="font-size:20px; padding:50px;">
+    <% include ../views/partials/_header.ejs%>
+      <form method="POST" action="/login/"
+      <table>
+        <tr>
+          <td><label for="login">Please enter your email</label></td>
+          <td><input type="email" name="email" placeholder="your@domain.com" style="width: 300px">
+          <br>
+          <td><label for="login">Please enter your password</label></td>
+          <td><input type="password" name="password" placeholder="password" style="width: 300px">
+          <br>
+          <td><button type="submit">Login</button></td>
+        </tr>
+      </table>
+      </form>
+    </body>
+</html>

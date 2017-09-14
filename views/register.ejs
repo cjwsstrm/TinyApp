@@ -3,17 +3,19 @@
   <head>
     <title>TinyApp</title>
   </head>
-    <body style="font-size:20px; padding:50px;">
+</head>
+  <body style="font-size:20px; padding:50px;">
+    <% include ../views/partials/_header.ejs%>
       <form method="POST" action="/register/"
       <table>
         <tr>
-          <td><label for="login">Please enter your email</label></td>
+          <td><label for="register">Please enter your email</label></td>
           <td><input type="email" name="email" placeholder="example@youremail.com" style="width: 300px">
           <br>
-          <td><label for="login">Please enter a password</label></td>
+          <td><label for="register">Please enter a password</label></td>
           <td><input type="password" name="password" placeholder="password" style="width: 300px">
           <br>
-          <td><button type="submit">Login</button></td>
+          <td><button type="submit">Register</button></td>
         </tr>
       </table>
       </form>

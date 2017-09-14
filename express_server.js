@@ -107,7 +107,11 @@ app.post("/urls/:id", (request, response) => {
 });
 
 app.get("/login", (request, response) => {
-  response.render('login');
+  let templateVars = { shortURL: request.params.id,
+                       keyURL: urlDatabase[request.params.id],
+                      user: users[request.cookies['user_id']]
+                     };
+  response.render('login', templateVars);
 });
 
 app.post("/login", (request, response)  => {

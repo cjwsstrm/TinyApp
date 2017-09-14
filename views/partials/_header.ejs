@@ -11,25 +11,16 @@ This is TinyApp
   </form>
 <% } else{ %>
 <p>
-  <table>
-  <tr>
     <form method="GET" action="/register"
-      <label for="login">Register with us</label>
-      <td><button type="submit">Register</button></td>
-  </tr>
-  </form>
-  </table>
-<p>
-<p>
-  <table>
-  <tr>
-    <form method="POST" action="/login/"
-      <td><label for="login">Choose a username</label></td>
-      <td><input type="text" name="username" placeholder="thebestname" style="width: 300px">
-      <td><button type="submit">Login</button></td>
+    <label for="login">Register with us</label>
+    <button type="submit">Register</button>
     </form>
-  </tr>
-</table>
+<p>
+<p>
+    <form method="GET" action="/login/"
+    <label for="login">Here to log in</label>
+    <button type="submit">Login</button>
+    </form>
 <% } %>
 </p>
 <br>
