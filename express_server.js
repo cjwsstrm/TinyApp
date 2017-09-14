@@ -90,6 +90,11 @@ app.post("/logout", (request, response) => {
   response.redirect('/urls');
 });
 
+app.get("/register", (request, response) => {
+
+  response.render('/register');
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
