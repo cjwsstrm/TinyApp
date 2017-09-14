@@ -124,14 +124,24 @@ app.get("/register", (request, response) => {
 
 
 app.post("/register", (request, response) => {
-  let randomKey = generateRandomString();
-  users[randomKey] = {};
-  users[randomKey].id = randomKey;
-  users[randomKey].email = request.body.email;
-  users[randomKey].password = request.body.password;
-  response.cookie('username', randomKey);
-  console.log(users);
-  response.redirect('/urls');
+  if (!request.body.email || !request.body.password) {
+    response.statusCode = 400;
+    response.end(`${response.statusCode}`);
+  }
+  if (users.hasOwnProperty(`${request.body.email}`)) {
+    response.statusCode = 400;
+    response.end(`${response.statusCode}`);
+  }
+  else {
+    let randomKey = generateRandomString();
+    users[randomKey] = {};
+    users[randomKey].id = randomKey;
+    users[randomKey].email = request.body.email;
+    users[randomKey].password = request.body.password;
+    response.cookie('username', randomKey);
+    console.log(users);
+    response.redirect('/urls');
+  }
 });
 
 
