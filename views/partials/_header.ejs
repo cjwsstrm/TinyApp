@@ -2,9 +2,10 @@
 This is TinyApp
 <br>
 <br>
-<% if(username !== undefined) { %>
+
+<% if(user) { %>
   <form method="POST" action="/logout"
-  <p>Logged in as: <%= username %><br>
+  <p>Logged in as: <%= user.email %><br>
     <button type="submit">Logout</button>
   </p>
   </form>

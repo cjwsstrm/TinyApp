@@ -38,6 +38,7 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
+
 app.get("/", (request, response) => {
   response.end("Hello!");
 });
@@ -54,7 +55,7 @@ app.get("/hello", (request, response) => {
 app.get("/urls/new", (request, response) => {
   let templateVars = { shortURL: request.params.id,
                        keyURL: urlDatabase[request.params.id],
-                      username: request.cookies['username']
+                      user: users[request.cookies['user_id']]
                      };
   response.render("urls_new", templateVars);
 });
@@ -79,7 +80,7 @@ app.get("/urls", (request, response) => {
   let templateVars = { urls: urlDatabase,
                        keyURL: urlDatabase[request.params.id],
                        shortURL: request.params.id,
-                       username: request.cookies['username']
+                       user: users[request.cookies['user_id']]
                      };
   response.render("urls_index", templateVars);
 });
@@ -87,7 +88,7 @@ app.get("/urls", (request, response) => {
 app.get("/urls/:id", (request, response) => {
   let templateVars = { shortURL: request.params.id,
                        keyURL: urlDatabase[request.params.id],
-                       username: request.cookies['username']
+                       user: users[request.cookies['user_id']]
                       };
   response.render("urls_show", templateVars);
 });
@@ -110,14 +111,14 @@ app.post("/login", (request, response)  => {
 });
 
 app.post("/logout", (request, response) => {
-  response.clearCookie('username');
+  response.clearCookie('user_id');
   response.redirect('/urls');
 });
 
 app.get("/register", (request, response) => {
   let templateVars = { shortURL: request.params.id,
                        keyURL: urlDatabase[request.params.id],
-                      username: request.cookies['username']
+                      user: users[request.cookies['user_id']]
                      };
   response.render('register', templateVars);
 });
@@ -134,11 +135,12 @@ app.post("/register", (request, response) => {
   }
   else {
     let randomKey = generateRandomString();
-    users[randomKey] = {};
-    users[randomKey].id = randomKey;
-    users[randomKey].email = request.body.email;
-    users[randomKey].password = request.body.password;
-    response.cookie('username', randomKey);
+    users[randomKey] = {
+      id: randomKey,
+      email: request.body.email,
+      password: request.body.password
+    };
+    response.cookie('user_id', randomKey);
     console.log(users);
     response.redirect('/urls');
   }
