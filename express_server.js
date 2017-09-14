@@ -9,6 +9,30 @@ let urlDatabase = {
   "95m5xK": "http://google.com"
 };
 
+
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  },
+ "user3randomID": {
+   id: "user3randomID",
+   email: "thebestemail@lhl.ca",
+   password: "toogootobeguessed"
+ },
+ "user4randomID": {
+   id: "user4randomID",
+   email: "worstemail@gmail.se",
+   password: "areallybadone"
+ }
+};
+
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -90,9 +114,31 @@ app.post("/logout", (request, response) => {
   response.redirect('/urls');
 });
 
+app.get("/register", (request, response) => {
+  let templateVars = { shortURL: request.params.id,
+                       keyURL: urlDatabase[request.params.id],
+                      username: request.cookies['username']
+                     };
+  response.render('register', templateVars);
+});
+
+
+app.post("/register", (request, response) => {
+  let randomKey = generateRandomString();
+  users[randomKey] = {};
+  users[randomKey].id = randomKey;
+  users[randomKey].email = request.body.email;
+  users[randomKey].password = request.body.password;
+  response.cookie('username', randomKey);
+  console.log(users);
+  response.redirect('/urls');
+});
+
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
 
 function generateRandomString() {
   let text = "";

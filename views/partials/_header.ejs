@@ -1,5 +1,4 @@
 <!-- views/partials/header.ejs -->
-
 This is TinyApp
 <br>
 <br>
@@ -10,7 +9,18 @@ This is TinyApp
   </p>
   </form>
 <% } else{ %>
-<table>
+<p>
+  <table>
+  <tr>
+    <form method="GET" action="/register"
+      <label for="login">Register with us</label>
+      <td><button type="submit">Register</button></td>
+  </tr>
+  </form>
+  </table>
+<p>
+<p>
+  <table>
   <tr>
     <form method="POST" action="/login/"
       <td><label for="login">Choose a username</label></td>
@@ -20,5 +30,6 @@ This is TinyApp
   </tr>
 </table>
 <% } %>
+</p>
 <br>
 <br>
