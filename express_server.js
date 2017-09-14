@@ -28,12 +28,19 @@ const users = {
 };
 
 const urlDatabase = {
-  "b2xVn2": "http://lighthouselabs.ca",
-  "95m5xK": "http://google.com"
+  "b2xVn2": {
+    user: "",
+    longurl:  "http://lighthouselabs.ca",
+  },
+  "95m5xK": {
+    user: "",
+    longurl:  "http://google.com"
+  }
 };
 
 app.locals.urlDatabase = urlDatabase;
 app.locals.users = users;
+
 
 
 app.set("view engine", "ejs");
@@ -42,6 +49,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use( function (request, response, next) {
   response.locals.user = request.cookies.user;
+  // response.locals.shortURL = request.params.id;
+  // response.locals.keyURL = urlDatabase[request.params.id];
   next();
 });
 
@@ -70,7 +79,13 @@ app.post("/urls", (request, response) => {
   console.log(request.body);
   let randomKey = generateRandomString();
   let new_url = request.body['longURL'];
-  urlDatabase[randomKey] = new_url;
+  urlDatabase[randomKey] = {
+    user: response.locals.user.id,
+    longurl: new_url
+  }
+  for (var user in urlDatabase) {
+    user = response.locals.user.id;
+  }
   console.log(urlDatabase);
   let redirectUrl = 'http://localhost:8080/urls/' + randomKey
   response.redirect(redirectUrl);
