@@ -3,9 +3,9 @@ This is TinyApp
 <br>
 <br>
 
-<% if(locals.user) { %>
+<% if(username) { %>
   <form method="POST" action="/logout"
-  <p>Logged in as: <%= locals.user.email %><br>
+  <p>Logged in as: <%= username  %><br>
     <button type="submit">Logout</button>
   </p>
   </form>

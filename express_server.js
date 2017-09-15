@@ -38,8 +38,8 @@ const urlDatabase = {
   }
 };
 
-app.locals.urlDatabase = urlDatabase;
-app.locals.users = users;
+// app.locals.urlDatabase = urlDatabase;
+// app.locals.users = users;
 
 
 
@@ -48,10 +48,21 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use( function (request, response, next) {
-  response.locals.user = request.cookies.user;
-   response.locals.current_path= request.path;
-  next();
-});
+  response.locals.user_id = request.cookies.user_id;
+ const userid = request.cookies.user_id;
+ if (userid && userid in users) {
+   response.locals.username = users[userid].email;
+ } else {
+   response.locals.username = undefined;
+ }
+ response.locals.urls = urlDatabase;
+ response.locals.users = users;
+ next();
+})
+// next();
+// });
+
+
 
 app.get("/", (request, response) => {
   response.end("Hello!");
@@ -67,7 +78,7 @@ app.get("/hello", (request, response) => {
 
 //app.get accepts a get request from the browser
 app.get("/urls/new", (request, response) => {
-  if (response.locals.user) {
+  if (response.locals.user_id) {
       response.render("urls_new");
   } else {
     response.render('login');
@@ -78,25 +89,23 @@ app.post("/urls", (request, response) => {
   let randomKey = generateRandomString();
   let new_url = request.body['longURL'];
   urlDatabase[randomKey] = {
-    user: response.locals.user.id,
+    user: response.locals.user_id,
     longurl: new_url
   }
   for (var user in urlDatabase) {
-    urlDatabase[user].user = response.locals.user.id;
+    urlDatabase[user].user = response.locals.user_id;
   }
-  console.log(urlDatabase);
   let redirectUrl = 'http://localhost:8080/urls/' + randomKey
   response.redirect(redirectUrl);
 });
 
 app.get("/u/:shortURL", (request, response) => {
-  let longURL = urlDatabase[request.params.shortURL];
-  console.log(longURL);
+  let longURL = urlDatabase[request.params.shortURL].longurl;
   response.redirect(longURL);
 });
 
 app.get("/urls", (request, response) => {
-  response.render("urls_index");
+  response.render("urls_index", {urls: urlsForUser(request.cookies.user_id)});
 });
 
 app.get("/urls/:id", (request, response) => {
@@ -107,7 +116,7 @@ app.post("/urls/:id/delete", (request, response) => {
   if (response.locals.user) {
       delete urlDatabase[request.params.id];
   } else {
-    response.redirect("/login");
+    response.redirect("/urls");
   }
 });
 
@@ -124,7 +133,7 @@ app.get("/login", (request, response) => {
 app.post("/login", (request, response)  => {
   const user = userEmailExists(request.body.email);
   if (user && user.password === request.body.password) {
-    response.cookie('user', user)
+    response.cookie('user_id', user.id)
     response.redirect('/');
   } else {
     response.statusCode = 403;
@@ -133,7 +142,7 @@ app.post("/login", (request, response)  => {
 });
 
 app.post("/logout", (request, response) => {
-  response.clearCookie('user');
+  response.clearCookie('user_id');
   response.redirect('/urls');
 });
 
@@ -158,15 +167,14 @@ app.post("/register", (request, response) => {
       email: request.body.email,
       password: request.body.password
     };
-    console.log(users);
-    response.cookie('user', users[randomKey]);
+    response.cookie('user_id', randomKey);
     response.redirect('/urls');
   }
 });
 
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`Tiny App listening on port ${PORT}!`);
 });
 
 const userEmailExists = function (email) {
@@ -177,6 +185,15 @@ const userEmailExists = function (email) {
   }
 }
 
+const urlsForUser = function (id) {
+  const urls = [];
+  for (var shorturl in urlDatabase) {
+    if (urlDatabase[shorturl].user === id) {
+      urls.push(shorturl);
+    }
+  }
+  return urls
+}
 
 function generateRandomString() {
   let text = "";

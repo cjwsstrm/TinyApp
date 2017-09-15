@@ -6,16 +6,17 @@
     <body style="font-size:20px; padding:50px;">
       <% include ../views/partials/_header.ejs%>
       <table>
-        <tr>
-      <% for(var url in locals.urlDatabase) { %>
-          <td><%= `${url}:` %></td>
-          <td><%= `${locals.urlDatabase[url].longurl}`%></td>
-          <td> <a href="/urls/<%= url %>">Edit</</a>
-          <form method="POST" action="/urls/<%= url %>/delete">
-          <td><button name="Delete url">Delete the URL</button></tabled>
-          </form>
-          </tr>
-      <% } %>
+        <% urls.forEach(function(url) { %>
+          <tr>
+            <td>
+              <td><%= url %><a href="/urls/<%= url %>">Edit</</a>
+                <form method="POST" action="/urls/<%= url %>/delete">
+                  <td><button name="Delete url">Delete the URL</button></tabled>
+                  </form>
+                </tr>
+
+
+      <% }) %>
     </table>
       <p>
       <a href="/urls/new">Create a new url</a>
