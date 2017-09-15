@@ -134,7 +134,7 @@ app.get("/login", (request, response) => {
 
 app.post("/login", (request, response)  => {
   const user = userEmailExists(request.body.email);
-  if (user && user.password === request.body.password) {
+  if (user && bcrypt.compareSync(request.body.password, user.password)) {
     response.cookie('user_id', user.id)
     response.redirect('/');
   } else {
