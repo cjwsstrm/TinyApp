@@ -29,7 +29,7 @@ const users = {
 
 const urlDatabase = {
   "b2xVn2": {
-    user: "",
+    user: "userRandomID",
     longurl:  "http://lighthouselabs.ca",
   },
   "95m5xK": {
@@ -49,8 +49,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use( function (request, response, next) {
   response.locals.user = request.cookies.user;
-  // response.locals.shortURL = request.params.id;
-  // response.locals.keyURL = urlDatabase[request.params.id];
+   response.locals.current_path= request.path;
   next();
 });
 
@@ -76,7 +75,6 @@ app.get("/urls/new", (request, response) => {
 });
 
 app.post("/urls", (request, response) => {
-  console.log(request.body);
   let randomKey = generateRandomString();
   let new_url = request.body['longURL'];
   urlDatabase[randomKey] = {
@@ -84,7 +82,7 @@ app.post("/urls", (request, response) => {
     longurl: new_url
   }
   for (var user in urlDatabase) {
-    user = response.locals.user.id;
+    urlDatabase[user].user = response.locals.user.id;
   }
   console.log(urlDatabase);
   let redirectUrl = 'http://localhost:8080/urls/' + randomKey
@@ -102,17 +100,20 @@ app.get("/urls", (request, response) => {
 });
 
 app.get("/urls/:id", (request, response) => {
-  response.render("urls_show");
+  response.render("urls_show", {shortURL: request.params.id});
 });
 
 app.post("/urls/:id/delete", (request, response) => {
-  delete urlDatabase[request.params.id];
-  response.redirect("/urls");
+  if (response.locals.user) {
+      delete urlDatabase[request.params.id];
+  } else {
+    response.redirect("/login");
+  }
 });
 
 app.post("/urls/:id", (request, response) => {
   let id = request.params.id;
-   urlDatabase[id] = request.body.URL;
+   urlDatabase[id].longurl = request.body.URL;
   response.redirect('/urls');
 });
 
@@ -175,6 +176,7 @@ const userEmailExists = function (email) {
     }
   }
 }
+
 
 function generateRandomString() {
   let text = "";

@@ -6,12 +6,12 @@
       <body style="font-size:20px; padding:50px;">
       <% include ../views/partials/_header.ejs%>
       <ul>
-        <li><%= `ShortURL: ${locals.shortURL}`%></li>
+        <li><%= `ShortURL: ${shortURL}`%></li>
       </ul>
       <p>
-      <form method="POST" action="/urls/<%= locals.shortURL %>">
+      <form method="POST" action="/urls/<%= shortURL %>">
           <label for="URL">Update URL</label>
-          <input type="text" name="URL" value="<%= locals.keyURL %>">
+          <input type="text" name="URL">
           <button type="submit">Update</button>
       </form>
         </p>
