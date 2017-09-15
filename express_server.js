@@ -3,6 +3,8 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+
 
 const users = {
   "userRandomID": {
@@ -161,12 +163,15 @@ app.post("/register", (request, response) => {
     response.end(`${response.statusCode}`);
   }
   else {
-    let randomKey = generateRandomString();
+    const password = request.body.password
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const randomKey = generateRandomString();
     users[randomKey] = {
       id: randomKey,
       email: request.body.email,
-      password: request.body.password
+      password: hashedPassword
     };
+    console.log(users)
     response.cookie('user_id', randomKey);
     response.redirect('/urls');
   }
