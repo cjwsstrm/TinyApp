@@ -3,24 +3,20 @@
   <head>
     <title>TinyApp</title>
   </head>
-    <body style="font-size:20px; padding:50px;">
+  <body style="font-size:20px; padding:50px;">
       <% include ../views/partials/_header.ejs%>
       <table>
-        <% urls.forEach(function(url) { %>
-          <tr>
-            <td>
-              <td><%= url %><a href="/urls/<%= url %>">Edit</</a>
-                <form method="POST" action="/urls/<%= url %>/delete">
-                  <td><button name="Delete url">Delete the URL</button></tabled>
-                  </form>
-                </tr>
-
-
+      <% urls.forEach(function(url) { %>
+        <tr>
+          <td><%= url %><a href="/urls/<%= url %>">Edit</</a></td>
+          <form method="POST" action="/urls/<%= url %>/delete">
+            <td><button name="Delete url">Delete the URL</button></td>
+          </form>
+        </tr>
       <% }) %>
     </table>
-      <p>
-      <a href="/urls/new">Create a new url</a>
-
-      </p>
-    </body>
+    <p>
+    <a href="/urls/new">Create a new url</a>
+    </p>
+  </body>
 </html>
