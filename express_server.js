@@ -79,7 +79,6 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000
 }));
 
-
 app.use( function (request, response, next) {
   response.locals.user_id = request.session.user_id;
   const userid = request.session.user_id;
@@ -92,10 +91,6 @@ app.use( function (request, response, next) {
   response.locals.users = users;
   next();
 });
-
-
-
-
 
 app.get("/", (request, response) => {
   response.end("Hello!");
