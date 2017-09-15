@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
 
@@ -57,8 +56,9 @@ const urlsForUser = function (id) {
     }
   }
   return urls;
-}
+};
 
+//Used for user_id generation and shortURL creation
 function generateRandomString() {
   let text = "";
   const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -97,21 +97,22 @@ app.use( function (request, response, next) {
 
 app.get("/", (request, response) => {
   if (response.locals.user_id) {
-    response.render("urls_index");
+    response.redirect('/urls');
   } else {
     response.redirect('/login');
   }
 });
 
-app.get("/urls/json", (request, response) => {
-  response.json(urlDatabase);
-});
+//Commented out sections below used during development
+// app.get("/urls/json", (request, response) => {
+//   response.json(urlDatabase);
+// });
 
-app.get("/hello", (request, response) => {
-  response.end("<html><body>Hello <b>World</b></body></html>\n");
-});
+// app.get("/hello", (request, response) => {
+//   response.end("<html><body>Hello <b>World</b></body></html>\n");
+// });
 
-//app.get accepts a get request from the browser
+
 app.get("/urls/new", (request, response) => {
   if (response.locals.user_id) {
     response.render("urls_new");
@@ -139,7 +140,7 @@ app.get("/u/:shortURL", (request, response) => {
     let longURL = urlDatabase[request.params.shortURL].longurl;
     response.redirect(longURL);
   } else {
-      response.status(403).end("Does not exist")
+    response.status(403).end("Does not exist");
   }
 });
 
@@ -147,7 +148,7 @@ app.get("/urls", (request, response) => {
   if (response.locals.user_id) {
     response.render("urls_index");
   } else {
-      response.status(403).end("Login for access!")
+    response.status(403).end("Login for access!");
   }
 });
 
@@ -155,11 +156,11 @@ app.get("/urls/:id", (request, response) => {
   if (response.locals.user_id) {
     response.render("urls_new");
   } if (!request.params.shortURL) {
-      response.status(403).end("Does not exist")
+    response.status(403).end("Does not exist");
   } if (response.locals.user_id && !urlDatabase[user].user) {
-      response.status(403).end("You do not have access to edit this URL")
+    response.status(403).end("You do not have access to edit this URL");
   } else {
-      response.status(403).end("You do not have access to edit this URL")
+    response.status(403).end("Login for access");
   }
 });
 
@@ -176,7 +177,7 @@ app.post("/urls/:id/delete", (request, response) => {
   if (response.locals.user_id) {
     delete urlDatabase[request.params.id];
   }
-    response.redirect("/urls");
+  response.redirect("/urls");
 });
 
 app.post("/urls/:id", (request, response) => {
@@ -185,17 +186,16 @@ app.post("/urls/:id", (request, response) => {
     urlDatabase[id].longurl = request.body.URL;
     response.redirect('/urls');
   } else {
-      response.render('login');
-  };
-
+    response.redirect('/login');
+  }
 });
 
 app.get("/login", (request, response) => {
   if (response.locals.user_id) {
     response.redirect('/urls');
   } else {
-      response.render('login');
-  };
+    response.render('login');
+  }
 });
 
 app.post("/login", (request, response)  => {
