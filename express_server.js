@@ -96,7 +96,11 @@ app.use( function (request, response, next) {
 });
 
 app.get("/", (request, response) => {
-  response.end("Hello!");
+  if (response.locals.user_id) {
+    response.render("urls_index");
+  } else {
+    response.render('login');
+  }
 });
 
 app.get("/urls/json", (request, response) => {
@@ -131,12 +135,20 @@ app.post("/urls", (request, response) => {
 });
 
 app.get("/u/:shortURL", (request, response) => {
-  let longURL = urlDatabase[request.params.shortURL].longurl;
-  response.redirect(longURL);
+  if (request.params.shortURL) {
+    let longURL = urlDatabase[request.params.shortURL].longurl;
+    response.redirect(longURL);
+  } else {
+      response.status(403).end("Does not exist")
+  }
 });
 
 app.get("/urls", (request, response) => {
-  response.render("urls_index");
+  if (response.locals.user_id) {
+    response.render("urls_index");
+  } else {
+      response.status(403).end("Login for access!")
+  }
 });
 
 app.get("/urls/:id", (request, response) => {
