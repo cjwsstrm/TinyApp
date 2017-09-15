@@ -99,7 +99,7 @@ app.get("/", (request, response) => {
   if (response.locals.user_id) {
     response.render("urls_index");
   } else {
-    response.render('login');
+    response.redirect('/login');
   }
 });
 
@@ -116,7 +116,7 @@ app.get("/urls/new", (request, response) => {
   if (response.locals.user_id) {
     response.render("urls_new");
   } else {
-    response.render('login');
+    response.redirect('/login');
   }
 });
 
@@ -154,10 +154,23 @@ app.get("/urls", (request, response) => {
 app.get("/urls/:id", (request, response) => {
   if (response.locals.user_id) {
     response.render("urls_new");
+  } if (!request.params.shortURL) {
+      response.status(403).end("Does not exist")
+  } if (response.locals.user_id && !urlDatabase[user].user) {
+      response.status(403).end("You do not have access to edit this URL")
   } else {
-    response.render('login');
-  };
+      response.status(403).end("You do not have access to edit this URL")
+  }
 });
+
+
+//
+// if a URL for the given ID does not exist:
+// (Minor) returns HTML with a relevant error message
+// if user is not logged in:
+// returns HTML with a relevant error message
+// if user is logged it but does not own the URL with the given ID:
+// returns HTML with a relevant error message
 
 app.post("/urls/:id/delete", (request, response) => {
   if (response.locals.user_id) {
@@ -167,13 +180,22 @@ app.post("/urls/:id/delete", (request, response) => {
 });
 
 app.post("/urls/:id", (request, response) => {
-  let id = request.params.id;
-  urlDatabase[id].longurl = request.body.URL;
-  response.redirect('/urls');
+  if (response.locals.user_id) {
+    let id = request.params.id;
+    urlDatabase[id].longurl = request.body.URL;
+    response.redirect('/urls');
+  } else {
+      response.render('login');
+  };
+
 });
 
 app.get("/login", (request, response) => {
-  response.render('login');
+  if (response.locals.user_id) {
+    response.redirect('/urls');
+  } else {
+      response.render('login');
+  };
 });
 
 app.post("/login", (request, response)  => {
@@ -189,11 +211,15 @@ app.post("/login", (request, response)  => {
 
 app.post("/logout", (request, response) => {
   request.session = null;
-  response.redirect('/urls');
+  response.redirect('/login');
 });
 
 app.get("/register", (request, response) => {
-  response.render('register');
+  if (response.locals.user_id) {
+    response.redirect('/urls');
+  } else {
+    response.render('register');
+  }
 });
 
 
@@ -214,9 +240,7 @@ app.post("/register", (request, response) => {
       email: request.body.email,
       password: hashedPassword
     };
-    console.log(users);
     request.session.user_id = randomKey;
-    // response.cookie('user_id', randomKey);
     response.redirect('/urls');
   }
 });
