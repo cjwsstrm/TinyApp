@@ -4,7 +4,33 @@ const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
+const cookieSession = require('cookie-session');
 
+app.set("view engine", "ejs");
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2'],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
+
+
+app.use( function (request, response, next) {
+  response.locals.user_id = request.session.user_id;
+ const userid = request.session.user_id;
+ if (userid && userid in users) {
+   response.locals.username = users[userid].email;
+ } else {
+   response.locals.username = undefined;
+ }
+ response.locals.urls = urlDatabase;
+ response.locals.users = users;
+ next();
+})
 
 const users = {
   "userRandomID": {
@@ -12,21 +38,21 @@ const users = {
     email: "user@example.com",
     password: "purple-monkey-dinosaur"
   },
- "user2RandomID": {
+  "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
     password: "dishwasher-funk"
   },
- "user3randomID": {
-   id: "user3randomID",
-   email: "thebestemail@lhl.ca",
-   password: "toogootobeguessed"
- },
- "user4randomID": {
-   id: "user4randomID",
-   email: "worstemail@gmail.se",
-   password: "areallybadone"
- }
+  "user3randomID": {
+    id: "user3randomID",
+    email: "thebestemail@lhl.ca",
+    password: "toogootobeguessed"
+  },
+  "user4randomID": {
+    id: "user4randomID",
+    email: "worstemail@gmail.se",
+    password: "areallybadone"
+  }
 };
 
 const urlDatabase = {
@@ -39,30 +65,6 @@ const urlDatabase = {
     longurl:  "http://google.com"
   }
 };
-
-// app.locals.urlDatabase = urlDatabase;
-// app.locals.users = users;
-
-
-
-app.set("view engine", "ejs");
-
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
-app.use( function (request, response, next) {
-  response.locals.user_id = request.cookies.user_id;
- const userid = request.cookies.user_id;
- if (userid && userid in users) {
-   response.locals.username = users[userid].email;
- } else {
-   response.locals.username = undefined;
- }
- response.locals.urls = urlDatabase;
- response.locals.users = users;
- next();
-})
-// next();
-// });
 
 
 
@@ -107,7 +109,7 @@ app.get("/u/:shortURL", (request, response) => {
 });
 
 app.get("/urls", (request, response) => {
-  response.render("urls_index", {urls: urlsForUser(request.cookies.user_id)});
+  response.render("urls_index", {urls: urlsForUser(request.session.user_id)});
 });
 
 app.get("/urls/:id", (request, response) => {
@@ -135,7 +137,8 @@ app.get("/login", (request, response) => {
 app.post("/login", (request, response)  => {
   const user = userEmailExists(request.body.email);
   if (user && bcrypt.compareSync(request.body.password, user.password)) {
-    response.cookie('user_id', user.id)
+    request.session.user_id = user.id
+    // response.cookie('user_id', user.id)
     response.redirect('/');
   } else {
     response.statusCode = 403;
@@ -144,7 +147,8 @@ app.post("/login", (request, response)  => {
 });
 
 app.post("/logout", (request, response) => {
-  response.clearCookie('user_id');
+  request.session = null;
+  // response.clearCookie('user_id');
   response.redirect('/urls');
 });
 
@@ -172,7 +176,8 @@ app.post("/register", (request, response) => {
       password: hashedPassword
     };
     console.log(users)
-    response.cookie('user_id', randomKey);
+    request.session.user_id = user_id;
+    // response.cookie('user_id', randomKey);
     response.redirect('/urls');
   }
 });
