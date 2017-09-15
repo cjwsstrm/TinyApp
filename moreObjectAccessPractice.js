@@ -11,5 +11,5 @@ const urlDatabase = {
 
 for (var i in urlDatabase) {
   console.log(Object.keys(urlDatabase[i]));
-  console.log(urlDatabase[i])
+  console.log(urlDatabase[i].longurl)
 }

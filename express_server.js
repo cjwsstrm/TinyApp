@@ -49,14 +49,15 @@ const userEmailExists = function (email) {
 };
 
 const urlsForUser = function (id) {
-  const urls = [];
+  const urls = {};
   for (var shorturl in urlDatabase) {
-    if (urlDatabase[shorturl].user === id) {
-      urls.push(shorturl);
+    var urlObject = urlDatabase[shorturl];
+    if (urlObject.user === id) {
+      urls[shorturl] = urlObject;
     }
   }
   return urls;
-};
+}
 
 function generateRandomString() {
   let text = "";
@@ -83,10 +84,12 @@ app.use( function (request, response, next) {
   response.locals.user_id = request.session.user_id;
   const userid = request.session.user_id;
   if (userid && userid in users) {
+    response.locals.user = users[userid];
     response.locals.username = users[userid].email;
   } else {
     response.locals.username = undefined;
   }
+  response.locals.userUrls = urlsForUser(request.session.user_id);
   response.locals.urls = urlDatabase;
   response.locals.users = users;
   next();
@@ -133,11 +136,15 @@ app.get("/u/:shortURL", (request, response) => {
 });
 
 app.get("/urls", (request, response) => {
-  response.render("urls_index", {urls: urlsForUser(request.session.user_id)});
+  response.render("urls_index");
 });
 
 app.get("/urls/:id", (request, response) => {
-  response.render("urls_show", {shortURL: request.params.id});
+  if (response.locals.user_id) {
+    response.render("urls_new");
+  } else {
+    response.render('login');
+  };
 });
 
 app.post("/urls/:id/delete", (request, response) => {

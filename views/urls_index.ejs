@@ -4,16 +4,19 @@
     <title>TinyApp</title>
   </head>
   <body style="font-size:20px; padding:50px;">
-      <% include ../views/partials/_header.ejs%>
-      <table>
-      <% urls.forEach(function(url) { %>
+    <% include ../views/partials/_header.ejs%>
+    <table cellpadding="8">
+      <% for (var shorturl in userUrls) { %>
+        <% var urlObject = userUrls[shorturl]; %>
         <tr>
-          <td><%= url %><a href="/urls/<%= url %>">Edit</</a></td>
-          <form method="POST" action="/urls/<%= url %>/delete">
+          <td><a href="/u/<%= shorturl %>">http://tiny.app/u/<%= shorturl %></a> </td>
+          <td><%= urlObject.longurl %></td>
+          <td><a href="/urls/<%= shorturl %>">Edit</a></td>
+          <form method="POST" action="/urls/<%= shorturl %>/delete">
             <td><button name="Delete url">Delete the URL</button></td>
           </form>
         </tr>
-      <% }) %>
+      <% } %>
     </table>
     <p>
     <a href="/urls/new">Create a new url</a>
