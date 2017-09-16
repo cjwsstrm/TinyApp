@@ -71,7 +71,6 @@ function generateRandomString() {
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2'],
@@ -157,7 +156,7 @@ app.get("/urls/:id", (request, response) => {
     response.render("urls_new");
   } if (!request.params.shortURL) {
     response.status(403).end("Does not exist");
-  } if (response.locals.user_id && !urlDatabase[user].user) {
+  } if (response.locals.user_id === urlDatabase[request.params.id].user) {
     response.status(403).end("You do not have access to edit this URL");
   } else {
     response.status(403).end("Login for access");
