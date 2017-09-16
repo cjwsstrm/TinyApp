@@ -153,24 +153,15 @@ app.get("/urls", (request, response) => {
 
 app.get("/urls/:id", (request, response) => {
   if (response.locals.user_id) {
-    response.render("urls_new");
-  } if (!request.params.shortURL) {
+    response.render("urls_show", {shortURL: request.params.id});
+  } if (!request.params.id) {
     response.status(403).end("Does not exist");
-  } if (response.locals.user_id === urlDatabase[request.params.id].user) {
-    response.status(403).end("You do not have access to edit this URL");
+  // } if (response.locals.user_id === urlDatabase[request.params.id].user) {
+  //   response.status(403).end("You do not have access to edit this URL");
   } else {
     response.status(403).end("Login for access");
   }
 });
-
-
-//
-// if a URL for the given ID does not exist:
-// (Minor) returns HTML with a relevant error message
-// if user is not logged in:
-// returns HTML with a relevant error message
-// if user is logged it but does not own the URL with the given ID:
-// returns HTML with a relevant error message
 
 app.post("/urls/:id/delete", (request, response) => {
   if (response.locals.user_id) {
@@ -220,7 +211,6 @@ app.get("/register", (request, response) => {
     response.render('register');
   }
 });
-
 
 app.post("/register", (request, response) => {
   if (!request.body.email || !request.body.password) {
