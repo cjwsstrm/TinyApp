@@ -152,9 +152,6 @@ app.get("/urls", (request, response) => {
 });
 
 app.get("/urls/:id", (request, response) => {
-  console.log('urlDatabase', urlDatabase);
-  console.log('userUrls', response.locals.userUrls);
-  console.log('id', request.params.id);
   if (!(request.params.id in urlDatabase)) {
     response.status(404).end("Does not exist");
   } else if (!response.locals.user_id) {
