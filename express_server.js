@@ -152,14 +152,17 @@ app.get("/urls", (request, response) => {
 });
 
 app.get("/urls/:id", (request, response) => {
-  if (response.locals.user_id) {
-    response.render("urls_show", {shortURL: request.params.id});
-  } if (!request.params.id) {
-    response.status(403).end("Does not exist");
-  // } if (response.locals.user_id === urlDatabase[request.params.id].user) {
-  //   response.status(403).end("You do not have access to edit this URL");
-  } else {
+  console.log('urlDatabase', urlDatabase);
+  console.log('userUrls', response.locals.userUrls);
+  console.log('id', request.params.id);
+  if (!(request.params.id in urlDatabase)) {
+    response.status(404).end("Does not exist");
+  } else if (!response.locals.user_id) {
     response.status(403).end("Login for access");
+  } else if (!(request.params.id in response.locals.userUrls)) {
+    response.status(403).end("You do not have access to edit this URL");
+  } else {
+    response.render("urls_show", {shortURL: request.params.id});
   }
 });
 
