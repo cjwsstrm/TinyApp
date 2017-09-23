@@ -49,8 +49,8 @@ const userEmailExists = function (email) {
 
 const urlsForUser = function (id) {
   const urls = {};
-  for (var shorturl in urlDatabase) {
-    var urlObject = urlDatabase[shorturl];
+  for (let shorturl in urlDatabase) {
+    const urlObject = urlDatabase[shorturl];
     if (urlObject.user === id) {
       urls[shorturl] = urlObject;
     }
@@ -63,7 +63,7 @@ function generateRandomString() {
   let text = "";
   const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (var i = 0; i < 6; i++) {
+  for (let i = 0; i < 6; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
@@ -80,7 +80,6 @@ app.use(cookieSession({
 }));
 
 app.use( function (req, res, next) {
-  console.log('User Middleware');
   res.locals.user_id = req.session.user_id;
   const userid = req.session.user_id;
   if (userid && userid in users) {
@@ -90,7 +89,6 @@ app.use( function (req, res, next) {
     res.locals.username = undefined;
   }
   res.locals.userUrls = urlsForUser(req.session.user_id);
-  console.log('userUrls', res.locals.userUrls)
   res.locals.urls = urlDatabase;
   res.locals.users = users;
   next();
@@ -178,7 +176,6 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res)  => {
-  console.log('Login Body', req.body);
   const user = userEmailExists(req.body.email);
   if (user && bcrypt.compareSync(req.body.password, user.password)) {
     req.session.user_id = user.id;

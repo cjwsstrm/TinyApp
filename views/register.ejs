@@ -5,18 +5,16 @@
   </head>
   <body style="font-size:20px; padding:50px;">
     <% include ../views/partials/_header.ejs%>
-    <form method="POST" action="/register/"
-      <table cellpadding="8">
-        <tr>
-          <td><label for="register">Please enter your email</label></td>
-          <td><input type="email" name="email" placeholder="example@youremail.com" style="width: 300px"></td>
-          <br>
-          <td><label for="register">Please enter a password</label></td>
-          <td><input type="password" name="password" placeholder="password" style="width: 300px"></td>
-          <br>
-          <td><button type="submit">Register</button></td>
-        </tr>
-      </table>
+    <form method="POST" action="/register/">
+      <div>
+        <label for="register">Please enter your email</label>
+        <input type="email" name="email" placeholder="example@youremail.com" style="width: 300px">
+      </div>
+      <div>
+        <label for="register">Please enter a password</label>
+        <input type="password" name="password" placeholder="password" style="width: 300px">
+      </div>
+      <button type="submit">Register</button>
     </form>
   </body>
 </html>

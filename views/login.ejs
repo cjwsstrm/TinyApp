@@ -6,17 +6,15 @@
   <body style="font-size:20px; padding:50px;">
     <% include ../views/partials/_header.ejs%>
     <form method="POST" action="/login/">
-      <table>
-        <tr>
-          <td><label for="login">Please enter your email</label></td>
-          <td><input type="email" name="email" placeholder="your@domain.com" style="width: 300px"></td>
-          <br>
-          <td><label for="login">Please enter your password</label></td>
-          <td><input type="password" name="password" placeholder="password" style="width: 300px"></td>
-          <br>
-          <td><button type="submit">Login</button></td>
-        </tr>
-      </table>
+      <div>
+        <label style="margin-right: 30px" for="login">Please enter your email</label>
+        <input type="email" name="email" placeholder="your@domain.com" style="width: 300px">
+      </div>
+      <div>
+        <label for="login">Please enter your password</label>
+        <input type="password" name="password" placeholder="password" style="width: 300px">
+      </div>
+      <button type="submit">Login</button>
     </form>
   </body>
 </html>
