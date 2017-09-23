@@ -79,158 +79,144 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000
 }));
 
-app.use( function (request, response, next) {
-  response.locals.user_id = request.session.user_id;
-  const userid = request.session.user_id;
+app.use( function (req, res, next) {
+  console.log('User Middleware');
+  res.locals.user_id = req.session.user_id;
+  const userid = req.session.user_id;
   if (userid && userid in users) {
-    response.locals.user = users[userid];
-    response.locals.username = users[userid].email;
+    res.locals.user = users[userid];
+    res.locals.username = users[userid].email;
   } else {
-    response.locals.username = undefined;
+    res.locals.username = undefined;
   }
-  response.locals.userUrls = urlsForUser(request.session.user_id);
-  response.locals.urls = urlDatabase;
-  response.locals.users = users;
+  res.locals.userUrls = urlsForUser(req.session.user_id);
+  console.log('userUrls', res.locals.userUrls)
+  res.locals.urls = urlDatabase;
+  res.locals.users = users;
   next();
 });
 
-app.get("/", (request, response) => {
-  if (response.locals.user_id) {
-    response.redirect('/urls');
+app.get("/", (req, res) => {
+  if (res.locals.user_id) {
+    res.redirect('/urls');
   } else {
-    response.redirect('/login');
+    res.redirect('/login');
   }
 });
 
-//Commented out sections below used during development
-// app.get("/urls/json", (request, response) => {
-//   response.json(urlDatabase);
-// });
-
-// app.get("/hello", (request, response) => {
-//   response.end("<html><body>Hello <b>World</b></body></html>\n");
-// });
-
-
-app.get("/urls/new", (request, response) => {
-  if (response.locals.user_id) {
-    response.render("urls_new");
+app.get("/urls/new", (req, res) => {
+  if (res.locals.user_id) {
+    res.render("urls_new");
   } else {
-    response.redirect('/login');
+    res.redirect('/login');
   }
 });
 
-app.post("/urls", (request, response) => {
+app.post("/urls", (req, res) => {
   let randomKey = generateRandomString();
-  let new_url = request.body['longURL'];
+  let new_url = req.body['longURL'];
   urlDatabase[randomKey] = {
-    user: response.locals.user_id,
+    user: res.locals.user_id,
     longurl: new_url
   };
-  for (var user in urlDatabase) {
-    urlDatabase[user].user = response.locals.user_id;
-  }
   let redirectUrl = 'http://localhost:8080/urls/' + randomKey;
-  response.redirect(redirectUrl);
+  res.redirect(redirectUrl);
 });
 
-app.get("/u/:shortURL", (request, response) => {
-  if (request.params.shortURL) {
-    let longURL = urlDatabase[request.params.shortURL].longurl;
-    response.redirect(longURL);
+app.get("/u/:shortURL", (req, res) => {
+  if (req.params.shortURL) {
+    let longURL = urlDatabase[req.params.shortURL].longurl;
+    res.redirect(longURL);
   } else {
-    response.status(403).end("Does not exist");
+    res.status(403).end("Does not exist");
   }
 });
 
-app.get("/urls", (request, response) => {
-  if (response.locals.user_id) {
-    response.render("urls_index");
+app.get("/urls", (req, res) => {
+  if (res.locals.user_id) {
+    res.render("urls_index");
   } else {
-    response.status(403).end("Login for access!");
+    res.status(403).end("Login for access!");
   }
 });
 
-app.get("/urls/:id", (request, response) => {
-  if (!(request.params.id in urlDatabase)) {
-    response.status(404).end("Does not exist");
-  } else if (!response.locals.user_id) {
-    response.status(403).end("Login for access");
-  } else if (!(request.params.id in response.locals.userUrls)) {
-    response.status(403).end("You do not have access to edit this URL");
+app.get("/urls/:id", (req, res) => {
+  if (!(req.params.id in urlDatabase)) {
+    res.status(404).end("Does not exist");
+  } else if (!res.locals.user_id) {
+    res.status(403).end("Login for access");
+  } else if (!(req.params.id in res.locals.userUrls)) {
+    res.status(403).end("You do not have access to edit this URL");
   } else {
-    response.render("urls_show", {shortURL: request.params.id});
+    res.render("urls_show", {shortURL: req.params.id});
   }
 });
 
-app.post("/urls/:id/delete", (request, response) => {
-  if (response.locals.user_id) {
-    delete urlDatabase[request.params.id];
+app.post("/urls/:id/delete", (req, res) => {
+  if (res.locals.user_id) {
+    delete urlDatabase[req.params.id];
   }
-  response.redirect("/urls");
+  res.redirect("/urls");
 });
 
-app.post("/urls/:id", (request, response) => {
-  if (response.locals.user_id) {
-    let id = request.params.id;
-    urlDatabase[id].longurl = request.body.URL;
-    response.redirect('/urls');
+app.post("/urls/:id", (req, res) => {
+  if (res.locals.user_id) {
+    let id = req.params.id;
+    urlDatabase[id].longurl = req.body.URL;
+    res.redirect('/urls');
   } else {
-    response.redirect('/login');
+    res.redirect('/login');
   }
 });
 
-app.get("/login", (request, response) => {
-  if (response.locals.user_id) {
-    response.redirect('/urls');
+app.get("/login", (req, res) => {
+  if (res.locals.user_id) {
+    res.redirect('/urls');
   } else {
-    response.render('login');
+    res.render('login');
   }
 });
 
-app.post("/login", (request, response)  => {
-  const user = userEmailExists(request.body.email);
-  if (user && bcrypt.compareSync(request.body.password, user.password)) {
-    request.session.user_id = user.id;
-    response.redirect('/');
+app.post("/login", (req, res)  => {
+  console.log('Login Body', req.body);
+  const user = userEmailExists(req.body.email);
+  if (user && bcrypt.compareSync(req.body.password, user.password)) {
+    req.session.user_id = user.id;
+    res.redirect('/');
   } else {
-    response.statusCode = 403;
-    response.end(`${response.statusCode}`);
+    res.statusCode = 403;
+    res.end(`${res.statusCode}`);
   }
 });
 
-app.post("/logout", (request, response) => {
-  request.session = null;
-  response.redirect('/login');
+app.post("/logout", (req, res) => {
+  req.session = null;
+  res.redirect('/login');
 });
 
-app.get("/register", (request, response) => {
-  if (response.locals.user_id) {
-    response.redirect('/urls');
+app.get("/register", (req, res) => {
+    res.render('register');
+});
+
+app.post("/register", (req, res) => {
+  if (!req.body.email || !req.body.password) {
+    res.statusCode = 400;
+    res.end(`${res.statusCode}`);
+  }
+  if (userEmailExists(req.body.email)) {
+    res.statusCode = 400;
+    res.end(`${res.statusCode}`);
   } else {
-    response.render('register');
-  }
-});
-
-app.post("/register", (request, response) => {
-  if (!request.body.email || !request.body.password) {
-    response.statusCode = 400;
-    response.end(`${response.statusCode}`);
-  }
-  if (userEmailExists(request.body.email)) {
-    response.statusCode = 400;
-    response.end(`${response.statusCode}`);
-  } else {
-    const password = request.body.password;
+    const password = req.body.password;
     const hashedPassword = bcrypt.hashSync(password, 10);
     const randomKey = generateRandomString();
     users[randomKey] = {
       id: randomKey,
-      email: request.body.email,
+      email: req.body.email,
       password: hashedPassword
     };
-    request.session.user_id = randomKey;
-    response.redirect('/urls');
+    req.session.user_id = randomKey;
+    res.redirect('/urls');
   }
 });
 
