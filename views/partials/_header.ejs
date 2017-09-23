@@ -4,12 +4,12 @@ This is TinyApp
 <% if(username) { %>
 <form method="POST" action="/logout">
   <p>
-      Logged in as: <%= username  %>
+    Logged in as: <%= username  %>
     <br>
     <button type="submit">Logout</button>
   </p>
 </form>
-<a href='/urls'>Your urls</a>
+<a style="padding-left 15px" href='/urls'>Your urls</a>
 <% } else{ %>
 <p>
   <a href='/register'>Register with us</a>
