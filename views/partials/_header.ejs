@@ -1,18 +1,24 @@
-<!-- views/partials/header.ejs -->
-This is TinyApp
-
-<% if(username) { %>
-<form method="POST" action="/logout">
-  <p>
-    Logged in as: <%= username  %>
-    <br>
-    <button type="submit">Logout</button>
-  </p>
-</form>
-<a style="padding-left 15px" href='/urls'>Your urls</a>
-<% } else{ %>
-<p>
-  <a href='/register'>Register with us</a>
-  <a href='/login'>Login</a>
-</p>
-<% } %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TinyApp</title>
+  </head>
+  <body style="font-size:20px; padding:50px;">
+    <header><strong>This is TinyApp</strong></header>
+    <% if(username) { %>
+    <form method="POST" action="/logout">
+      <p>
+        Logged in as: <%= username  %>
+        <br>
+        <button type="submit">Logout</button>
+      </p>
+    </form>
+    <a style="padding-left 15px" href='/urls'>Your urls</a>
+    <% } else{ %>
+    <p>
+      <a href='/register'>Register with us</a>
+      <a href='/login'>Login</a>
+    </p>
+    <% } %>
+  </body>
+</html>
