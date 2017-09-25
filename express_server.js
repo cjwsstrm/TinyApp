@@ -87,6 +87,8 @@ app.use( function (req, res, next) {
     res.locals.username = users[userid].email;
   } else {
     res.locals.username = undefined;
+    res.locals.user_id = undefined;
+
   }
   res.locals.userUrls = urlsForUser(req.session.user_id);
   res.locals.urls = urlDatabase;
